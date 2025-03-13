@@ -1,9 +1,11 @@
 SELECT * FROM hospital_data.`hospital data analysis`;
 
 #Total Cost spent on each Condition
-select `Condition`, Sum(Cost) As Total_cost 
-from hospital_data.`hospital data analysis` 
-group by `Condition`;
+SELECT `Condition`, FORMAT(SUM(Cost), 2) AS `Total Cost ($)`
+FROM hospital_data.`hospital data analysis`
+GROUP BY `Condition`
+ORDER BY SUM(Cost);
+
 
 # count of readmission patients by gender
 select count(Patient_ID) AS Total_count , Gender 
@@ -65,7 +67,7 @@ SELECT
 	`Condition`
 FROM hospital_data.`hospital data analysis`
 GROUP BY Age_group, `Condition`
-ORDER BY Age_group, `Condition`;
+ORDER BY Age_group, `Condition`, Patient_Count;
 
 #condition by Gender (Female)
 select `Condition`, `Procedure`, count(`Procedure`) as Total_count_per_condition 
@@ -105,12 +107,13 @@ SELECT
         ELSE 'Elderly (66 and above)'
     END AS Age_group, 
     `Procedure`,
-    AVG(Cost) AS Avg_Cost,
-    SUM(Cost) AS Total_Cost,
+    FORMAT(AVG(Cost), 2) AS `Avg Cost ($)`,
+    FORMAT(SUM(Cost), 2) AS `Total Cost ($)`,
     COUNT(*) AS Total_Cases
-from hospital_data.`hospital data analysis`
-GROUP BY Age_Group, `Procedure`
-ORDER BY Total_Cost DESC;
+FROM hospital_data.`hospital data analysis`
+GROUP BY Age_group, `Procedure`
+ORDER BY SUM(Cost) DESC;
+
 
 #patient satisfactory by age group
 SELECT 
