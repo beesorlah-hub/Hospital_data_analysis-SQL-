@@ -19,14 +19,93 @@ This project analyzes Hospital data using Structured Query Language(SQL) to extr
 - link: https://www.kaggle.com/datasets/blueblushed/hospital-dataset-for-practice/data
   
 ## Insights
-- Total Cost spent on each Condition:- Ths analysis showed the Total cost each of the conditions with cancer with total cost of 1650000 and Allergic Reaction with less cost of 6600
-- count of readmission patients by gender:- showed that out of 264 readmission cases, 230 of which are female while a 34 patients where male
-- Average length of stay per procedure:- This showed that Surgery and Chemotherpy has a high Average length of stay of 42.65 while Epinephrine Injection has a low  Average length of stay of 34.24
--  count of readmission patients showed that out of the 984 patients 264 of which are Readmission while 720 patients are not readmission.
--  Readmission rate by condition:- This showed that Readmission Rate increase by 100 for patients with Heart Attack condition, while Childbirth, Kidneystone and five other conditions has no readmission rate
--   Patients satisfaction by outcome: -Data showed that Patient who recovered from out come have an Average satisfaction of 3.8 while patient stable outcome have 3.2
--   Condition per Age group:- showed that patients that are aged from 66 and above have high patient count for Heart Attack, Hypertension, Stroke, Osteoarthritis, Cancer and Diabetes compared to other age group.
--   condition by Gender :- Showed that Female patients are suffering from many health conditions compared the male.
+  **Total Cost spent on each Condition**
+  
+      SELECT `Condition`, FORMAT(SUM(Cost), 2) AS `Total Cost ($)`
+      FROM hospital_data.`hospital data analysis`
+      GROUP BY `Condition`
+      ORDER BY SUM(Cost);
+      
+![Screenshot 2025-05-24 115347](https://github.com/user-attachments/assets/e8aeaa46-85e6-466e-a4a8-fcbdddeea5a3)
+
+**Count of readmission patients** 
+
+    SELECT COUNT(Readmission) as Total_count_of_Readmission, Readmission 
+    FROM hospital_data.`hospital data analysis` 
+    group by Readmission;
+
+![Screenshot 2025-05-24 123140](https://github.com/user-attachments/assets/2b8aa589-62e5-4632-8640-9c51f0d6531a)
+
+
+**Count of readmission patients by gender**
+
+     select  Gender, count(Patient_ID) AS Total_readmission
+     from hospital_data.`hospital data analysis` 
+     where Gender in ('Female', 'Male') and Readmission = 'Yes' 
+     group by Gender;
+
+![Screenshot 2025-05-24 120258](https://github.com/user-attachments/assets/9ff0d008-d3af-4736-826d-8d8b1b57c563)
+
+
+**Readmission by Childbirth**
+
+    SELECT 
+    COUNT(CASE WHEN Readmission = 'Yes' THEN Patient_ID END) AS Childbirth_with_Readmission,
+    COUNT(CASE WHEN Readmission = 'No' THEN Patient_ID END) AS Childbirth_without_Readmission
+    FROM hospital_data.`hospital data analysis` 
+    WHERE Gender = 'Female' AND `Condition` = 'Childbirth';
+    
+![Screenshot 2025-05-24 122924](https://github.com/user-attachments/assets/fc6538a8-37f2-4d97-8336-b344a2444e20)
+
+    
+
+ **Average length of stay per Condition**
+ 
+     select `Condition`, round(Avg(Length_of_Stay),0) As Average_Stay 
+    from hospital_data.`hospital data analysis` 
+    group by `Condition`
+    order by Average_Stay;
+
+![Screenshot 2025-05-24 121505](https://github.com/user-attachments/assets/a6e328d7-68d0-48ec-afc6-f4274ed38dab)
+
+
+**Readmission rate by condition**
+
+    SELECT `Condition`, Round(COUNT(CASE WHEN Readmission = 'Yes' THEN 1 END) * 100.0 /              COUNT(*), 0) AS Readmission_Rate
+    from hospital_data.`hospital data analysis`
+    GROUP BY `Condition`
+    ORDER BY Readmission_Rate DESC;
+    
+![Screenshot 2025-05-24 123752](https://github.com/user-attachments/assets/f998459b-bbd5-4c0b-9e6b-d173a612e7a9)
+
+**Patients satisfaction by outcome** 
+
+    select Outcome, avg(Satisfaction) as Average_Satisfaction 
+    FROM hospital_data.`hospital data analysis` 
+    group by Outcome
+    order by Average_Satisfaction;
+
+![image](https://github.com/user-attachments/assets/d4e7e141-7f11-4553-a0c5-1b3f63857021)
+
+**Condition per Age group**
+
+      SELECT 
+    CASE 
+        WHEN Age < 18 THEN 'Child (0-17)'
+        WHEN Age BETWEEN 18 AND 35 THEN 'Young Adult'
+        WHEN Age BETWEEN 36 AND 50 THEN 'Middle-aged Adult'
+        WHEN Age BETWEEN 51 AND 65 THEN 'Senior Adult'
+        ELSE 'Elderly'
+    END AS Age_group, 
+    COUNT(*) AS Patient_Count,
+	`Condition`
+    FROM hospital_data.`hospital data analysis`
+    GROUP BY Age_group, `Condition`
+    ORDER BY Age_group, `Condition`, Patient_Count;
+
+![image](https://github.com/user-attachments/assets/53309999-56ab-4640-aefb-53d71f367fbd)
+
+**condition by Gender**
 -   Readmission rate by age group:- Showed that patient with the age range from 51 and above has high Readmission rate
 -   Cost by procedure and age group:- Showed that patient with the age range from 51 and above send high of cost on treatment
  -   patient satisfactory by age group: Satisfactory rate increases from elderly to the young
