@@ -106,9 +106,40 @@ This project analyzes Hospital data using Structured Query Language(SQL) to extr
 ![image](https://github.com/user-attachments/assets/53309999-56ab-4640-aefb-53d71f367fbd)
 
 **condition by Gender**
--   Readmission rate by age group:- Showed that patient with the age range from 51 and above has high Readmission rate
--   Cost by procedure and age group:- Showed that patient with the age range from 51 and above send high of cost on treatment
- -   patient satisfactory by age group: Satisfactory rate increases from elderly to the young
+
+	SELECT 
+ 	   Gender,
+ 	   `Condition`, 
+ 	   `Procedure`, 
+  	  COUNT(`Procedure`) AS Total_count_per_condition 
+	FROM hospital_data.`hospital data analysis` 
+	WHERE Gender IN ('Female', 'Male') 
+	GROUP BY Gender, `Condition`, `Procedure`
+	ORDER BY Gender, `Condition`, Total_count_per_condition DESC;
+
+![image](https://github.com/user-attachments/assets/da223794-0443-45e9-b74e-4c8b250d3116)
+
+  **patient satisfaction by age group**
+
+ 
+	SELECT 
+    CASE 
+        WHEN Age < 18 THEN 'Child (0-17)'
+        WHEN Age BETWEEN 18 AND 35 THEN 'Young Adult (18-35)'
+        WHEN Age BETWEEN 36 AND 50 THEN 'Middle-aged Adult (36-50)'
+        WHEN Age BETWEEN 51 AND 65 THEN 'Senior Adult (51-65)'
+        ELSE 'Elderly (66 and above)'
+    END AS Age_group, 
+    ROUND(AVG(Satisfaction), 2) AS Avg_Satisfaction,
+    COUNT(*) AS Total_Responses
+	from hospital_data.`hospital data analysis`
+	GROUP BY Age_Group
+	ORDER BY Avg_Satisfaction DESC;
+
+![image](https://github.com/user-attachments/assets/8927884f-2373-4e2c-b0d0-2c71378cf0e1)
+
+
+
 ## Recommendation
 - Cost Management :- Implement preventive measures and early detection programs to reduce long-term cancer treatment expenses.
 - Improving Length of Stay Efficiency:- Since surgeries and chemotherapy have the highest average stay, hospitals should optimize care pathways to reduce unnecessary hospital stays.
